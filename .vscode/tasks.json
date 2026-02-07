@@ -1,0 +1,85 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/MyWPFApp/MyWPFApp.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "build-host",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/WpfHost/WpfHost.csproj",
+                "/property:GenerateFullPaths=true"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "run",
+            "dependsOn": ["build"],
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "run",
+                "--project",
+                "${workspaceFolder}/MyWPFApp/MyWPFApp.csproj",
+                "--no-build"
+            ],
+            "problemMatcher": "$msCompile",
+            "isBackground": true
+        },
+        {
+            "label": "run-host",
+            "dependsOn": ["build-host", "build"],
+            "command": "${workspaceFolder}/run-host.sh",
+            "type": "shell",
+            "problemMatcher": [],
+            "isBackground": true,
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "watch",
+            "command": "${workspaceFolder}/MyWPFApp/watch-dev.sh",
+            "type": "shell",
+            "problemMatcher": [],
+            "isBackground": true,
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "kill-wpf",
+            "command": "pkill",
+            "type": "shell",
+            "args": ["-f", "(MyWPFApp|WpfHost).exe"],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "silent"
+            }
+        },
+        {
+            "label": "restart",
+            "dependsOn": ["kill-wpf", "run"],
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        }
+    ]
+}

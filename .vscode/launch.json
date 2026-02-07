@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run WPF App",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "dotnet",
+            "args": ["run", "--project", "${workspaceFolder}/MyWPFApp/MyWPFApp.csproj", "--no-build"],
+            "cwd": "${workspaceFolder}/MyWPFApp",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        }
+    ]
+}

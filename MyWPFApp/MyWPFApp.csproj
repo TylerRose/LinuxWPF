@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>false</PublishSingleFile>
+    
+    <!-- Proton configuration for Linux native dotnet run -->
+    <SteamRoot Condition="'$(SteamRoot)' == ''">$(HOME)/.local/share/Steam</SteamRoot>
+    <ProtonPath Condition="'$(ProtonPath)' == ''">$(SteamRoot)/steamapps/common/Proton - Experimental</ProtonPath>
+    <ProtonPrefix Condition="'$(ProtonPrefix)' == ''">$(HOME)/.proton</ProtonPrefix>
+    
+    <!-- Launch via Proton only when running on Linux (not inside Wine) -->
+    <!-- When WineRuntime=true, we're inside Wine and should run the exe directly -->
+    <RunCommand Condition="'$(WineRuntime)' != 'true'">bash</RunCommand>
+    <RunArguments Condition="'$(WineRuntime)' != 'true'">-c "STEAM_COMPAT_CLIENT_INSTALL_PATH='$(SteamRoot)' STEAM_COMPAT_DATA_PATH='$(ProtonPrefix)' PROTON_USE_WINED3D=1 '$(ProtonPath)/proton' run '$(MSBuildProjectDirectory)/bin/$(Configuration)/$(TargetFramework)/$(RuntimeIdentifier)/$(AssemblyName).exe'"</RunArguments>
+    <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
+  </PropertyGroup>
+
+  <!-- Custom target to run via Proton after publish -->
+  <Target Name="RunWithProton" AfterTargets="Publish">
+    <PropertyGroup>
+      <PublishedExePath>$(PublishDir)$(AssemblyName).exe</PublishedExePath>
+    </PropertyGroup>
+    
+    <Message Text="Running published $(AssemblyName) via Proton..." Importance="high" />
+    
+    <Exec Command="STEAM_COMPAT_CLIENT_INSTALL_PATH='$(SteamRoot)' STEAM_COMPAT_DATA_PATH='$(ProtonPrefix)' '$(ProtonPath)/proton' run '$(PublishedExePath)'" 
+          IgnoreExitCode="true"
+          WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
+</Project>

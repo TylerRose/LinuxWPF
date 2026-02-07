@@ -1,0 +1,1 @@
+bash -c "STEAM_COMPAT_CLIENT_INSTALL_PATH='~/.local/share/Steam' STEAM_COMPAT_DATA_PATH='~/.proton' PROTON_USE_WINED3D=1 '~/.local/share/Steam/steamapps/common/Proton - Experimental/proton' run '~/wpf/MyWPFApp/bin/Debug/net10.0-windows/win-x64/MyWPFApp.exe'"
